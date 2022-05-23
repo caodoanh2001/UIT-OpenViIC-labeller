@@ -1,0 +1,67 @@
+QPushButton#blueButton {
+    background-color: #1E88E5;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    min-width: 80px;
+    border-radius: 25px;
+}
+
+QPushButton#blueButton:hover {
+    background-color: #1976D2;
+}
+
+QPushButton#blueButton:hover:pressed {
+    background-color: #0D47A1;
+}
+
+QPushButton#redButton {
+    background-color: #FF4500;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    min-width: 80px;
+    border-radius: 25px;
+}
+
+QPushButton#redButton:hover {
+    background-color: #CD5C5C;
+}
+QPushButton#redButton:hover:pressed {
+    background-color: #DC143C;
+}
+
+QPushButton#greenButton {
+    background-color: #228B22;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    min-width: 80px;
+    border-radius: 25px;
+}
+
+QPushButton#greenButton:hover {
+    background-color: #008000;
+}
+QPushButton#greenButton:hover:pressed {
+    background-color: #006400;
+}
+
+QLabel#selectedFolderLabel {
+background-color: white;
+border: 1px solid #aaa
+}
+
+QLineEdit#captionBox {
+background-color: white;
+border: 1px solid #aaa
+}
+
+QLabel#selectedJsonFile {
+background-color: white;
+border: 1px solid #aaa
+}
+
+QLabel#headline {
+font-weight: bold;
+}

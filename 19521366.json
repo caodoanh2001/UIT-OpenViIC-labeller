@@ -1,0 +1,54 @@
+{
+    "00000000000.png": {
+        "caption": null,
+        "delete": true
+    },
+    "00000000001.jpg": {
+        "caption": "hay nhỉ",
+        "delete": false
+    },
+    "00000000002.jpg": {
+        "caption": "mình làm được chưa",
+        "delete": false
+    },
+    "00000000003.jpg": {
+        "caption": null,
+        "delete": true
+    },
+    "00000000004.jpg": {
+        "caption": "cô gái",
+        "delete": false
+    },
+    "00000000005.jpg": {
+        "caption": null,
+        "delete": true
+    },
+    "00000000006.jpg": {
+        "caption": null,
+        "delete": true
+    },
+    "00000000007.jpg": {
+        "caption": "ảnh này tôi xóa và tôi chỉnh lại",
+        "delete": false
+    },
+    "00000000008.jpg": {
+        "caption": "tôi chỉnh sửa ảnh này",
+        "delete": false
+    },
+    "00000000009.jpg": {
+        "caption": "một cô gái đang đứng tạo dáng chụp ảnh trong một công viên có nhiều bụi cây hai bên đường",
+        "delete": false
+    },
+    "00000000010.jpg": {
+        "caption": "đám cưới",
+        "delete": false
+    },
+    "00000000011.jpg": {
+        "caption": "giấy chứng nhận",
+        "delete": false
+    },
+    "00000000012.jpg": {
+        "caption": "cù lao mây",
+        "delete": false
+    }
+}

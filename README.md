@@ -1,1 +1,0 @@
-# UIT-OpenViIC-labeller
