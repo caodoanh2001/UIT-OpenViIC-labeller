@@ -252,14 +252,16 @@ class HistoryWindow(QWidget):
         self.download_btn.clicked.connect(lambda state, filename='assigned_classes': self.download_file())
         self.download_btn.setObjectName("blueButton")
         self.download_btn.setIcon(QIcon("icons/download.png"))
-
-        # self.show()
   
     # method for widgets
     def UiComponents(self):
         """
         Main history window.
         """
+        # Connect drive
+        self.gauth = GoogleAuth()           
+        self.drive = GoogleDrive(self.gauth)
+
         # Display label backup
         self.backup_files_label = QLabel(self)
         self.backup_files_label.setGeometry(150, 20, 300, 30)
@@ -276,14 +278,11 @@ class HistoryWindow(QWidget):
         # target drive ID
         self.targetDirID = '1lhvZ-a8xAxC4SK27RldBnPALMW2t5x0L'
 
-        # Connect drive
-        gauth = GoogleAuth()           
-        drive = GoogleDrive(gauth)
         connected = False
         list_backed_up_files = []
         
         try:
-            exist_file_list = drive.ListFile({'q': "'{}' in parents and trashed=false".format(self.targetDirID)}).GetList()
+            exist_file_list = self.drive.ListFile({'q': "'{}' in parents and trashed=false".format(self.targetDirID)}).GetList()
             for file1 in exist_file_list:
                 if file1['title'].split('_')[0] == self.user_id:
                     list_backed_up_files.append(file1['title'])
@@ -299,12 +298,10 @@ class HistoryWindow(QWidget):
         """
         Download selected file from Drive.
         """
-        gauth = GoogleAuth()           
-        drive = GoogleDrive(gauth)
         selected_filename = str(self.combo_box.currentText())
         
         try:
-            exist_file_list = drive.ListFile({'q': "'{}' in parents and trashed=false".format(self.targetDirID)}).GetList()
+            exist_file_list = self.drive.ListFile({'q': "'{}' in parents and trashed=false".format(self.targetDirID)}).GetList()
             for file1 in exist_file_list:
                 if file1['title'] == selected_filename:
                     file1.GetContentFile(file1['title'])
