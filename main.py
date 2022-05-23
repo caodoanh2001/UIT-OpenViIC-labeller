@@ -177,7 +177,7 @@ class SetupWindow(QWidget):
         shows a dialog to choose folder with images to label
         """
         file_dialog = QFileDialog()
-        file_path = file_dialog.getOpenFileName(None, "Select File")[0]
+        file_path = file_dialog.getOpenFileName(None, "Select File", self.selected_folder)[0]
 
         self.selected_annotation_label.setText(file_path)
         self.selected_annotation = file_path
@@ -708,7 +708,7 @@ class LabelerWindow(QWidget):
             self.update_annotated_dict(self.img_paths[self.counter], self.caption_textbox.toPlainText(), save_file=True)
 
         # open file name
-        self.json_file_name = QFileDialog.getSaveFileName(self, 'Save File', self.user_id, "JSON Files (*.json)")[0]
+        self.json_file_name = self.json_file_name = QFileDialog.getSaveFileName(self, 'Save File', os.path.join(self.input_folder, self.user_id), "JSON Files (*.json)")[0]
         if self.json_file_name != '':
             file = open(self.json_file_name, 'w', encoding="utf-8")
             json.dump(self.annotated_dict, file, ensure_ascii=False, indent=4)
@@ -728,7 +728,7 @@ class LabelerWindow(QWidget):
 
         # open file name.
         if self.json_file_name == '':
-            self.json_file_name = QFileDialog.getSaveFileName(self, 'Save File', self.user_id, "JSON Files (*.json)")[0]
+            self.json_file_name = QFileDialog.getSaveFileName(self, 'Save File', os.path.join(self.input_folder, self.user_id), "JSON Files (*.json)")[0]
         
         if self.json_file_name != '':
             file = open(self.json_file_name, 'w', encoding="utf-8")
