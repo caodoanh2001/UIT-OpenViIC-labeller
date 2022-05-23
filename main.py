@@ -368,7 +368,7 @@ class LabelerWindow(QWidget):
             loaded_annotated_dict = json.load(open(self.selected_annotation, 'r', encoding='utf-8'))
             self.annotated_dict = loaded_annotated_dict
             self.json_file_name = self.selected_annotation
-            self.counter = len(loaded_annotated_dict.keys())
+            self.counter = len(loaded_annotated_dict.keys()) - 1
 
         # init UI
         # Sub-history window
@@ -568,8 +568,11 @@ class LabelerWindow(QWidget):
         self.caption_textbox.setFocus()
 
         # already
-        already_caption, already_delete = self.get_annotated_text_next_image(self.img_paths[self.counter + 1])
-
+        already_caption, already_delete = "", False
+        try:
+            already_caption, already_delete = self.get_annotated_text_next_image(self.img_paths[self.counter + 1])
+        except:
+            pass
         # Annotator not do anything.
         if self.caption_textbox.toPlainText() == "" and (not self.delete):
             # self.delete_image()
