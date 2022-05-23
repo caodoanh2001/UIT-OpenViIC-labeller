@@ -227,15 +227,16 @@ class SetupWindow(QWidget):
                 label_values.append(label.text().strip())
 
             self.close()
-            # show window in full-screen mode (window is maximized)
+            # show window in full-screen mode
             LabelerWindow(self.selected_folder, self.mode, self.user_textbox.text(), self.log_file, self.selected_annotation).show()
         else:
             self.error_message.setText(message)
 
 class HistoryWindow(QWidget):
-    def __init__(self, user_id):
+    def __init__(self, user_id, exist_file_list):
         super().__init__()
         self.user_id = user_id
+        self.exist_file_list = exist_file_list
         self.setWindowTitle("Lịch sử Backup")
         self.setGeometry(100, 100, 600, 200)
         self.UiComponents()
@@ -282,11 +283,11 @@ class HistoryWindow(QWidget):
         list_backed_up_files = []
         
         try:
-            exist_file_list = self.drive.ListFile({'q': "'{}' in parents and trashed=false".format(self.targetDirID)}).GetList()
-            for file1 in exist_file_list:
+            for file1 in self.exist_file_list:
                 if file1['title'].split('_')[0] == self.user_id:
                     list_backed_up_files.append(file1['title'])
             connected = True
+
         except:
             self.alert_text.clear()
             self.alert_text.setText("Không có kết nối mạng. Vui lòng kiểm tra lại.")
@@ -301,8 +302,7 @@ class HistoryWindow(QWidget):
         selected_filename = str(self.combo_box.currentText())
         
         try:
-            exist_file_list = self.drive.ListFile({'q': "'{}' in parents and trashed=false".format(self.targetDirID)}).GetList()
-            for file1 in exist_file_list:
+            for file1 in self.exist_file_list:
                 if file1['title'] == selected_filename:
                     file1.GetContentFile(file1['title'])
 
@@ -356,6 +356,7 @@ class LabelerWindow(QWidget):
         self.csv_note = QLabel('(File cũng sẽ tự động lưu khi bạn tắt tool.)', self)
         self.csv_generated_message = QLabel(self)
 
+        # Annotated dictionary
         self.annotated_dict = {}
 
         # Annotation path
@@ -373,7 +374,11 @@ class LabelerWindow(QWidget):
         # init UI
         # Sub-history window
         # history
-        self.history_window = HistoryWindow(user_id=self.user_id)
+        # self.history_window = HistoryWindow(user_id=self.user_id)
+
+        # backup configuration
+        self.targetDirID = '1lhvZ-a8xAxC4SK27RldBnPALMW2t5x0L'
+
         self.init_ui()
 
     def init_ui(self):
@@ -407,11 +412,6 @@ class LabelerWindow(QWidget):
         self.csv_generated_message.setGeometry(self.img_panel_width + 20, 660, 800, 20)
         self.csv_generated_message.setStyleSheet('color: #43A047')
 
-        # show image
-        self.set_image(self.img_paths[self.counter])
-        self.image_box.setGeometry(20, 120, self.img_panel_width, self.img_panel_height)
-        self.image_box.setAlignment(Qt.AlignTop)
-
         # image name
         self.img_name_label.setText(self.img_paths[self.counter])
 
@@ -442,8 +442,18 @@ class LabelerWindow(QWidget):
         font.setPointSize(24)
         self.caption_textbox.setFont(font)
 
+        # show image
+        self.set_image(self.img_paths[self.counter])
+        self.image_box.setGeometry(20, 120, self.img_panel_width, self.img_panel_height)
+        self.image_box.setAlignment(Qt.AlignTop)
+
+        # load first caption (if available)
+        first_filename = os.path.basename(self.img_paths[self.counter])
+        if first_filename in self.annotated_dict:
+            self.caption_textbox.setPlainText(self.annotated_dict[first_filename]["caption"])
+
         # backup configuration
-        self.targetDirID = '1lhvZ-a8xAxC4SK27RldBnPALMW2t5x0L'
+        # self.targetDirID = '1lhvZ-a8xAxC4SK27RldBnPALMW2t5x0L'
 
         # delete flag
         self.delete = False
@@ -525,9 +535,17 @@ class LabelerWindow(QWidget):
         # Add "History" button
         history_btn = QtWidgets.QPushButton("Lịch sử", self)
         history_btn.setGeometry(self.img_panel_width + 580, 380, 80, 40)
-        history_btn.clicked.connect(self.history_window.show)
+        history_btn.clicked.connect(self.show_history_popup)
+        #history_btn.clicked.connect(self.history_window.show)
         history_btn.setObjectName("blueButton")
         history_btn.setIcon(QIcon("icons/history.png"))
+
+    def show_history_popup(self):
+        gauth = GoogleAuth()           
+        drive = GoogleDrive(gauth)
+        exist_file_list = drive.ListFile({'q': "'{}' in parents and trashed=false".format(self.targetDirID)}).GetList()
+        history_window = HistoryWindow(user_id=self.user_id, exist_file_list=exist_file_list)
+        history_window.show()
 
     def update_annotated_dict(self, path_image, text, save_file=None):
         """
@@ -567,68 +585,71 @@ class LabelerWindow(QWidget):
         """
         self.caption_textbox.setFocus()
 
-        # already
-        already_caption, already_delete = "", False
-        try:
-            already_caption, already_delete = self.get_annotated_text_next_image(self.img_paths[self.counter + 1])
-        except:
-            pass
-        # Annotator not do anything.
-        if self.caption_textbox.toPlainText() == "" and (not self.delete):
-            # self.delete_image()
-            self.alert_text.setText("Cần thực hiện hành động gì đó trước khi qua ảnh kế tiếp.")
-            self.alert_text.setStyleSheet('color: red; font-weight: bold')
-            self.alert_text.setGeometry(self.img_panel_width + 60, 450, 600, 28)
-
-        elif already_caption != "" or already_delete:
-            self.alert_text.clear()
-            self.caption_textbox.clear()
-            self.delete_alert.clear()
-            if self.counter < self.num_images - 1:
-                self.counter += 1
-                path = self.img_paths[self.counter]
-                
-                self.caption_textbox.setPlainText(already_caption)
-                self.delete = already_delete
-
-                if self.delete:
-                    self.delete_alert.setText("Ảnh đã được xóa")
-                
-                self.set_image(path)
-                self.img_name_label.setText(path)
-                self.progress_bar.setText(f'Ảnh: {self.counter + 1} / {self.num_images}')
-                self.csv_generated_message.setText('')
-
-            # Change button color if this is last image in dataset
-            elif self.counter == self.num_images - 1:
-                path = self.img_paths[self.counter]
-
-            # self.delete = False
-        else:
-            if not self.delete:
-                self.update_annotated_dict(self.img_paths[self.counter], self.caption_textbox.toPlainText())
-
-            # Remove text in textbox
-            self.alert_text.clear()
-            self.caption_textbox.clear()
-            self.delete_alert.clear()
+        if self.counter < self.num_images - 1:
+            # already
+            already_caption, already_delete = "", False
             
-            path = None
-            if self.counter < self.num_images - 1:
-                self.counter += 1
+            try:
+                already_caption, already_delete = self.get_annotated_text_next_image(self.img_paths[self.counter + 1])
+            except:
+                pass
 
-                path = self.img_paths[self.counter]
-                # self.show_caption_if_exists(path, self.annotated_dict)
-                self.set_image(path)
-                self.img_name_label.setText(path)
-                self.progress_bar.setText(f'Ảnh: {self.counter + 1} / {self.num_images}')
-                self.csv_generated_message.setText('')
+            # Annotator not do anything.
+            if self.caption_textbox.toPlainText() == "" and (not self.delete):
+                # self.delete_image()
+                self.alert_text.setText("Cần thực hiện hành động gì đó trước khi qua ảnh kế tiếp.")
+                self.alert_text.setStyleSheet('color: red; font-weight: bold')
+                self.alert_text.setGeometry(self.img_panel_width + 60, 450, 600, 28)
 
-            # Change button color if this is last image in dataset
-            elif self.counter == self.num_images - 1:
-                path = self.img_paths[self.counter]
+            elif already_caption != "" or already_delete:
+                self.alert_text.clear()
+                self.caption_textbox.clear()
+                self.delete_alert.clear()
+                if self.counter < self.num_images - 1:
+                    self.counter += 1
+                    path = self.img_paths[self.counter]
+                    
+                    self.caption_textbox.setPlainText(already_caption)
+                    self.delete = already_delete
 
-            self.delete = False
+                    if self.delete:
+                        self.delete_alert.setText("Ảnh đã được xóa")
+                    
+                    self.set_image(path)
+                    self.img_name_label.setText(path)
+                    self.progress_bar.setText(f'Ảnh: {self.counter + 1} / {self.num_images}')
+                    self.csv_generated_message.setText('')
+
+                # Change button color if this is last image in dataset
+                elif self.counter == self.num_images - 1:
+                    path = self.img_paths[self.counter]
+
+                # self.delete = False
+            else:
+                if not self.delete:
+                    self.update_annotated_dict(self.img_paths[self.counter], self.caption_textbox.toPlainText())
+
+                # Remove text in textbox
+                self.alert_text.clear()
+                self.caption_textbox.clear()
+                self.delete_alert.clear()
+                
+                path = None
+                if self.counter < self.num_images - 1:
+                    self.counter += 1
+
+                    path = self.img_paths[self.counter]
+                    # self.show_caption_if_exists(path, self.annotated_dict)
+                    self.set_image(path)
+                    self.img_name_label.setText(path)
+                    self.progress_bar.setText(f'Ảnh: {self.counter + 1} / {self.num_images}')
+                    self.csv_generated_message.setText('')
+
+                # Change button color if this is last image in dataset
+                elif self.counter == self.num_images - 1:
+                    path = self.img_paths[self.counter]
+
+                self.delete = False
 
     def show_prev_image(self):
         """
