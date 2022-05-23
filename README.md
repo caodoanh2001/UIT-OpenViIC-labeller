@@ -1,6 +1,9 @@
 # UIT-OpenViIC Labeller
 
-## 1. Installation (Using Anaconda)
+There are two ways to open UIT-OpenViIC Labeller:
+
+## 1. Run python Script
+### 1.1. Installation (Using Anaconda)
 
 Create new environment named "GanNhanIC":
 ```
@@ -22,13 +25,17 @@ Install required libs in `requirements.txt`
 pip install -r requirements.txt
 ```
 
-## 2. Get started labelling
+### 1.2. Get started labelling
 
 Run following script to open UIT-OpenViIC labeller:
 
 ```
 python main.py
 ```
+
+## 2. Run .exe file
+
+Simply run UIT-OpenViIC-labeller.exe.
 
 Some images of UIT-OpenViIC labeller:
 
