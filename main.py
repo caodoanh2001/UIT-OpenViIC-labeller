@@ -73,6 +73,7 @@ class SetupWindow(QWidget):
         self.browse_file_button = QtWidgets.QPushButton("Chọn file", self)
         self.browse_button = QtWidgets.QPushButton("Chọn thư mục", self)
         self.next_button = QtWidgets.QPushButton("Tiếp theo", self)
+        self.next_button.setShortcut("Return")
 
         # Display error
         self.error_message = QLabel(self)
