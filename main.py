@@ -302,6 +302,7 @@ class HistoryWindow(QWidget):
         gauth = GoogleAuth()           
         drive = GoogleDrive(gauth)
         selected_filename = str(self.combo_box.currentText())
+        
         try:
             exist_file_list = drive.ListFile({'q': "'{}' in parents and trashed=false".format(self.targetDirID)}).GetList()
             for file1 in exist_file_list:
@@ -312,6 +313,7 @@ class HistoryWindow(QWidget):
             self.alert_text.setText("Đã tải về file " + selected_filename)
             self.alert_text.setStyleSheet('color: green; font-weight: bold')
             self.alert_text.setGeometry(160, 150, 300, 28)
+        
         except:
             self.alert_text.clear()
             self.alert_text.setText("Không có kết nối mạng. Vui lòng kiểm tra lại.")
@@ -373,6 +375,8 @@ class LabelerWindow(QWidget):
 
         # init UI
         # Sub-history window
+        # history
+        self.history_window = HistoryWindow(user_id=self.user_id)
         self.init_ui()
 
     def init_ui(self):
@@ -522,10 +526,9 @@ class LabelerWindow(QWidget):
         backup_btn.setIcon(QIcon("icons/upload.png"))
 
         # Add "History" button
-        history_window = HistoryWindow(user_id=self.user_id)
         history_btn = QtWidgets.QPushButton("Lịch sử", self)
         history_btn.setGeometry(self.img_panel_width + 580, 380, 80, 40)
-        history_btn.clicked.connect(history_window.show)
+        history_btn.clicked.connect(self.history_window.show)
         history_btn.setObjectName("blueButton")
         history_btn.setIcon(QIcon("icons/history.png"))
 
