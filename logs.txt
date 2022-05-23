@@ -1,3 +1,0 @@
-image_path=C:/Users/nhhbu/Downloads/subset_1/subsets/subset_1
-json_path=D:/UIT/DoanhNghia/IC_Annotator/UIT-OpenViIC-labeller/21521000.json
-user_id=21521000
