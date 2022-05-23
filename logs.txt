@@ -1,3 +1,3 @@
 image_path=C:/Users/nhhbu/Downloads/subset_1/subsets/subset_1
-json_path=
+json_path=C:/Users/nhhbu/Downloads/subset_1/subsets/subset_1/19521366.json
 user_id=19521366
