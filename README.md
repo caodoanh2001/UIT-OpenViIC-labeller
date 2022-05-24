@@ -42,3 +42,13 @@ Some images of UIT-OpenViIC labeller:
 ![](https://i.imgur.com/RUaMC7N.png)
 
 ![](https://i.imgur.com/3fpIa3a.png)
+
+## 3. Contact
+
+1. Doanh C. Bui
+19521366@gm.uit.edu.vn
+Undergrate student at Faculty of Computer Science, University of Information Technology
+
+2. Nguyen Nghia
+19520178@gm.uit.edu.vn
+Undergrate student at Faculty of Information Science and Engineering, University of Information Technology
